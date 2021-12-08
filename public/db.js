@@ -23,24 +23,46 @@ request.onerror = function (event) {
 };
 
 // function to checkDatabaseTransaction
+function checkDatabaseTransaction() {
+  // open a transaction on BudgetTransaction
+  let transaction = db.transaction(["BudgetTransaction"], "readwrite");
 
-// open a transaction on BudgetTransaction
+  // access BudgetTransaction object
+  const transactionStore = transaction.objectStore("BudgetTransaction");
 
-// access BudgetTransaction object
+  // retrieve all records on BudgetTransaction and assign to a variable
+  const getAll = transactionStore.getAll();
 
-// retrieve all records on BudgetTransaction and assign to a variable
+  // check to see if the request was successful
+  getAll.onsuccess = function () {
+    // if there were records, add them when the app is back online
+    if (getAll.result.length > 0) {
+      fetch("/api/transaction/bulk", {
+        method: "POST",
+        body: JSON.stringify(getAll.result),
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((serverResponse) => {
+          // if the response came back with records
+          if (serverResponse.length !== 0) {
+            // start another BudgetTransaction
+            transaction = db.transaction(["BudgetTransaction"], "readwrite");
 
-// check to see if the request was successful
+            // assign the current transaction to a variable
+            const currentTransactionStore =
+              transaction.objectStore("BudgetTransaction");
 
-// if there were records, add them when the app is back online
-
-// if the response came back with records
-
-// start another BudgetTransaction
-
-// assign the current transaction to a variable
-
-// if current transaction add was successful, make sure to clear entries
+            // if current transaction add was successful, make sure to clear entries
+            currentTransactionStore.clear();
+          }
+        });
+    }
+  };
+}
 
 // log to see if successful
 
