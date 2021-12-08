@@ -65,15 +65,28 @@ function checkDatabaseTransaction() {
 }
 
 // log to see if successful
+request.onsuccess = function (event) {
+  console.log("successful attempt");
+  db = event.target.result;
 
-// make sure application is online before checking database
+  // make sure application is online before checking database
+  if (navigator.onLine) {
+    console.log("Online!");
+    checkDatabaseTransaction();
+  }
+};
 
 // function to save transaction
+const saveRecord = (record) => {
+  // create a transaction on the BudgetTransaction database
+  const transaction = db.transaction(["BudgetTransaction"], "readwrite");
 
-// create a transaction on the BudgetTransaction database
+  // access BudgetTransaction object store
+  const transactionStore = transaction.objectStore("BudgetTransaction");
 
-// access BudgetTransaction object store
-
-// add records to store
+  // add records to store
+  transactionStore.add(record);
+};
 
 // addEventListener to see if app is back online
+window.addEventListener("online", checkDatabaseTransaction);
