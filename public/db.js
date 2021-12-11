@@ -1,25 +1,17 @@
 let db;
-let budgetV;
-
-// create a request for a new database
-const request = indexedDB.open("BudTrackDB", budgetV || 1);
-
-request.onupgradeneeded = function (e) {
-  const db = request.result;
-  db.createObjectStore("BudTrackDB", { keyPath: "_id" });
-};
+const request = indexedDB.open("BudTrackDB", 1);
 
 request.onupgradeneeded = function (event) {
+  const db = event.target.result;
+  db.createObjectStore("BudgetTransaction", { autoIncrement: true });
   console.log("There needs to be an upgrade in IndexDB");
+};
 
-  const { oldV } = event;
-  const newV = event.newV || db.version;
-
-  console.log(`Database updated from version ${oldV} to ${newV}`);
-
+request.onsuccess = function (event) {
   db = event.target.result;
-  if (db.objectStoreNames.length === 0) {
-    db.createObjectStore("BudgetTransaction", { autoIncrement: true });
+
+  if (navigator.onLine) {
+    checkDatabaseTransaction();
   }
 };
 
