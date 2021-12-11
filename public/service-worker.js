@@ -4,7 +4,7 @@ const RUNTIME_CACHE = "runtime-cache";
 const FILES_TO_CACHE = [
   "/",
   "index.html",
-  "/dist/bundle.js",
+  "./dist/bundle.js",
   "db.js",
   "service-worker.js",
   "/icons/icon-192x192.png",
