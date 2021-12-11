@@ -4,6 +4,11 @@ let budgetV;
 // create a request for a new database
 const request = indexedDB.open("BudTrackDB", budgetV || 1);
 
+request.onupgradeneeded = function (e) {
+  const db = request.result;
+  db.createObjectStore("BudTrackDB", { keyPath: "_id" });
+};
+
 request.onupgradeneeded = function (event) {
   console.log("There needs to be an upgrade in IndexDB");
 
