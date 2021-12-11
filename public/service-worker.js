@@ -3,13 +3,12 @@ const RUNTIME_CACHE = "runtime-cache";
 
 const FILES_TO_CACHE = [
   "/",
-  "/index.html",
-  "/dist/bundle.js",
+  "/index.js",
   "/db.js",
-  "/service-worker.js",
   "/icons/icon-192x192.png",
   "/icons/icon-512x512.png",
   "/style.css",
+  "/manifest.webmanifest",
 ];
 
 self.addEventListener("install", function (event) {
